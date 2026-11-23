@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="ADSO Inventory Cloud Enterprise System">
+  <rect width="960" height="540" fill="#f8fafc"/>
+  <defs>
+    <pattern id="dotGrid" width="36" height="36" patternUnits="userSpaceOnUse">
+      <circle cx="18" cy="18" r="1.5" fill="#cbd5e1"/>
+    </pattern>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#0f172a" flood-opacity="0.1"/>
+    </filter>
+  </defs>
+
+  <rect width="960" height="540" fill="url(#dotGrid)"/>
+
+  <g filter="url(#cardShadow)">
+    <rect x="140" y="80" width="680" height="380" rx="20" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <rect x="140" y="80" width="680" height="60" rx="20" fill="#0f172a"/>
+    <circle cx="176" cy="110" r="6" fill="#38bdf8"/>
+    <circle cx="196" cy="110" r="6" fill="#94a3b8"/>
+    <circle cx="216" cy="110" r="6" fill="#94a3b8"/>
+
+    <text x="760" y="115" font-family="'Geist Mono', monospace" font-size="12" fill="#38bdf8" text-anchor="end">ADSO // SENA</text>
+
+    <!-- Sidebar & Dashboard UI -->
+    <rect x="176" y="170" width="140" height="250" rx="12" fill="#f1f5f9"/>
+    <rect x="192" y="194" width="108" height="12" rx="4" fill="#cbd5e1"/>
+    <rect x="192" y="222" width="88" height="10" rx="4" fill="#94a3b8"/>
+    <rect x="192" y="244" width="98" height="10" rx="4" fill="#94a3b8"/>
+    <rect x="192" y="266" width="78" height="10" rx="4" fill="#94a3b8"/>
+
+    <!-- Metric Cards -->
+    <rect x="340" y="170" width="140" height="85" rx="10" fill="#e0f2fe" stroke="#38bdf8" stroke-width="1"/>
+    <text x="356" y="202" font-family="Arial, sans-serif" font-size="12" fill="#0369a1" font-weight="bold">Stock Total</text>
+    <text x="356" y="236" font-family="'Geist Mono', monospace" font-size="22" fill="#0284c7" font-weight="bold">5,420</text>
+
+    <rect x="500" y="170" width="140" height="85" rx="10" fill="#f0fdf4" stroke="#4ade80" stroke-width="1"/>
+    <text x="516" y="202" font-family="Arial, sans-serif" font-size="12" fill="#15803d" font-weight="bold">Rotación</text>
+    <text x="516" y="236" font-family="'Geist Mono', monospace" font-size="22" fill="#16a34a" font-weight="bold">98.4%</text>
+
+    <rect x="660" y="170" width="124" height="85" rx="10" fill="#fef3c7" stroke="#fbbf24" stroke-width="1"/>
+    <text x="676" y="202" font-family="Arial, sans-serif" font-size="12" fill="#b45309" font-weight="bold">Alertas</text>
+    <text x="676" y="236" font-family="'Geist Mono', monospace" font-size="22" fill="#d97706" font-weight="bold">0</text>
+
+    <!-- Table Graphic -->
+    <rect x="340" y="280" width="444" height="140" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+    <path d="M340 316 L784 316 M340 354 L784 354 M340 392 L784 392" stroke="#e2e8f0" stroke-width="1"/>
+  </g>
+</svg>
+
