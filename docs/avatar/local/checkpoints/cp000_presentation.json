@@ -1,0 +1,73 @@
+{
+  "checkpoint": "cp000_presentation",
+  "purpose": "Escenario de referencias con encuadre completo y tercera vista renombrada a OBLICUA. Sin geometría de avatar.",
+  "modeling_started": false,
+  "source_images": {
+    "IMG_5306_2048.jpg": "d4a545816495eeead86d5e817ddd8c6274aecd32185eb692c5f3446b6a0e6e1e",
+    "IMG_4582_2048.jpg": "0919301bbbf4eb5b0c34915181c3cd925264796fd8117d487fd4af4d2d76c471",
+    "IMG_4553_2048.jpg": "be60baa8912615f81a70ecae63b24b8a91aaf2a31491460bb721e8d6b7584e3d"
+  },
+  "reference_plane_height_m": 0.4,
+  "reference_height_source": "valor por defecto; pendiente de proportions.json",
+  "proportions_available": false,
+  "head_height_target_m": 0.22,
+  "view_angles": {
+    "front": "camara en -Y; foto frontal completa",
+    "threequarter": "camara a -35 grados sobre el eje Z; foto completa",
+    "oblique": "camara en -X; foto oblicua con espejo, NO perfil verdadero"
+  },
+  "privacy": {
+    "uploaded_to_external_services": false,
+    "generation_started": false
+  },
+  "saved_at_utc": "2026-11-23T23:05:34.190846+00:00",
+  "blender_version": "5.3.0",
+  "material_repair": {
+    "repaired_at_utc": "2026-11-23T22:45:41.629682+00:00",
+    "cause": "El Output activo seguía conectado al Principled BSDF por defecto; la textura estaba en un Output inactivo.",
+    "fix": "Se limpió el árbol de nodos y se dejó una sola salida activa: imagen -> emisión -> superficie.",
+    "materials": [
+      {
+        "object": "REF_3Q_4582",
+        "material": "MAT_REF_3Q_4582",
+        "image": "IMG_4582_2048.jpg"
+      },
+      {
+        "object": "REF_FRONT_5306",
+        "material": "MAT_REF_FRONT_5306",
+        "image": "IMG_5306_2048.jpg"
+      },
+      {
+        "object": "REF_PROFILE_4553",
+        "material": "MAT_REF_PROFILE_4553",
+        "image": "IMG_4553_2048.jpg"
+      }
+    ]
+  },
+  "based_on": "cp000_references.blend",
+  "presentation": {
+    "ortho_scale": 0.46,
+    "previous_ortho_scale": 0.34,
+    "reference_plane_height_m": 0.4,
+    "lens_shift_x": 0.0,
+    "lens_shift_y": 0.0,
+    "note": "La escala del plano y del marco es solo presentación visual; no debe interpretarse como medida anatómica. Ninguna fotografía fue deformada, recortada o reencuadrada en su archivo."
+  },
+  "views": {
+    "front": {
+      "image": "IMG_5306_2048.jpg",
+      "role": "frontal"
+    },
+    "threequarter": {
+      "image": "IMG_4582_2048.jpg",
+      "role": "tres cuartos"
+    },
+    "oblique": {
+      "image": "IMG_4553_2048.jpg",
+      "role": "oblicua / referencia complementaria",
+      "true_profile": false
+    }
+  },
+  "true_profile_available": false,
+  "profile_landmarks_status": "pendientes de una vista de perfil real; no se inventan ni se usan para cp001"
+}

@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Picker de landmarks — avatar local</title>
+<style>
+  :root {
+    --bg: #0e1116;
+    --panel: #171c24;
+    --line: #2b3442;
+    --text: #e8edf4;
+    --muted: #9aa7b8;
+    --accent: #63d4c2;
+    --done: #3fbf8f;
+    --warn: #e8b45c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  header, footer {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 20px;
+  }
+  header h1 { margin: 0 0 4px; font-size: 20px; }
+  header p { margin: 0; color: var(--muted); }
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 18px;
+    padding: 0 20px;
+  }
+  .view {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .view h2 { margin: 0 0 10px; font-size: 16px; }
+  .quick { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+  button {
+    background: #222a35;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font: inherit;
+  }
+  button:hover { border-color: var(--accent); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.primary { background: #1b4f49; border-color: var(--accent); }
+  input[type=file] { display: block; margin: 8px 0 12px; max-width: 100%; color: var(--muted); }
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) 210px; gap: 12px; }
+  .stage {
+    position: relative;
+    background: #080a0e;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 120px;
+  }
+  .stage img { display: block; width: 100%; height: auto; }
+  .stage svg { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; }
+  .stage .hint {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    color: var(--muted); text-align: center; padding: 12px;
+  }
+  .points { max-height: 560px; overflow: auto; padding-right: 4px; }
+  .points button {
+    display: block; width: 100%; text-align: left;
+    margin-bottom: 3px; padding: 4px 7px;
+    font-size: 12px; background: transparent;
+  }
+  .points button.done { color: var(--done); border-color: #245e4b; }
+  .points button.active { background: #23413d; border-color: var(--accent); }
+  .status { color: var(--muted); font-size: 12px; margin-top: 8px; }
+  .status b { color: var(--warn); }
+  footer {
+    display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    border-top: 1px solid var(--line); margin-top: 22px;
+  }
+  footer .note { color: var(--muted); margin-right: auto; font-size: 12px; }
+  #message { color: var(--accent); font-size: 12px; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Picker de landmarks — fase 1, rostro</h1>
+  <p>Marca los puntos sobre las copias locales. Todo ocurre en este navegador: no hay fetch, subida ni conexión de red.</p>
+</header>
+
+<main>
+  <section class="view" id="view-front">
+    <h2>Frente</h2>
+    <div class="quick" id="quick-front"></div>
+    <input type="file" id="file-front" accept="image/*">
+    <div class="layout">
+      <div class="stage" id="stage-front">
+        <img id="img-front" alt="Referencia frontal">
+        <svg id="svg-front" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="hint" id="hint-front">Carga una foto frontal para empezar</div>
+      </div>
+      <div>
+        <div class="points" id="points-front"></div>
+        <div class="status" id="status-front"></div>
+        <button id="reset-front" style="margin-top:8px">Reiniciar puntos</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-profile">
+    <h2>Perfil / tres cuartos</h2>
+    <div class="quick" id="quick-profile"></div>
+    <input type="file" id="file-profile" accept="image/*">
+    <div class="layout">
+      <div class="stage" id="stage-profile">
+        <img id="img-profile" alt="Referencia de perfil">
+        <svg id="svg-profile" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="hint" id="hint-profile">Carga IMG_4553 para empezar</div>
+      </div>
+      <div>
+        <div class="points" id="points-profile"></div>
+        <div class="status" id="status-profile"></div>
+        <button id="reset-profile" style="margin-top:8px">Reiniciar puntos</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span class="note">Salida: <code>docs/avatar/local/config/proportions.json</code>. Cópiala a esa ruta después de descargarla.</span>
+  <button id="download" class="primary">Descargar proportions.json</button>
+  <button id="copy">Copiar JSON</button>
+  <button id="validate">Validar puntos</button>
+  <span id="message"></span>
+</footer>
+
+<script>
+const VIEWS = {
+  front: {
+    suggestions: ["IMG_5306_2048.jpg", "IMG_4582_2048.jpg"],
+    points: [
+      ["linea_cabello_centro", "Centro de la línea de nacimiento"],
+      ["ceja_izq_inicio", "Ceja izq. inicio (imagen izq.)"],
+      ["ceja_izq_fin", "Ceja izq. fin"],
+      ["ceja_der_inicio", "Ceja der. inicio"],
+      ["ceja_der_fin", "Ceja der. fin / corte"],
+      ["ojo_izq_interno", "Ojo izq. canto interno"],
+      ["ojo_izq_externo", "Ojo izq. canto externo"],
+      ["ojo_der_interno", "Ojo der. canto interno"],
+      ["ojo_der_externo", "Ojo der. canto externo"],
+      ["nariz_punta", "Punta de la nariz"],
+      ["nariz_base", "Base de la nariz"],
+      ["boca_centro", "Centro de la boca"],
+      ["menton", "Punta del mentón"],
+      ["mandibula_izq", "Ángulo mandibular izq."],
+      ["mandibula_der", "Ángulo mandibular der."]
+    ]
+  },
+  profile: {
+    suggestions: ["IMG_4553_2048.jpg"],
+    points: [
+      ["craneo_superior", "Punto más alto del cráneo"],
+      ["frente_perfil", "Frente en perfil"],
+      ["nariz_raiz", "Raíz de la nariz"],
+      ["nariz_punta_perfil", "Punta de la nariz"],
+      ["nariz_base_perfil", "Base de la nariz"],
+      ["labio_superior", "Labio superior"],
+      ["labio_inferior", "Labio inferior"],
+      ["menton_perfil", "Mentón"],
+      ["mandibula_angulo", "Ángulo mandibular"],
+      ["oreja_centro", "Centro de la oreja"],
+      ["nuca", "Nuca"]
+    ]
+  }
+};
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+const state = {
+  front: { imageName: null, imageSize: null, points: {} },
+  profile: { imageName: null, imageSize: null, points: {} }
+};
+let active = null;
+
+function msg(text) { document.getElementById("message").textContent = text; }
+function viewState(key) { return state[key]; }
+function pointList(key) { return VIEWS[key].points; }
+
+function buildUI() {
+  Object.keys(VIEWS).forEach(key => {
+    const quick = document.getElementById("quick-" + key);
+    VIEWS[key].suggestions.forEach(name => {
+      const b = document.createElement("button");
+      b.textContent = name;
+      b.title = "Cargar " + name + " desde prepared/optimized";
+      b.onclick = () => loadImage(key, "../../prepared/optimized/" + name, name);
+      quick.appendChild(b);
+    });
+
+    document.getElementById("file-" + key).addEventListener("change", ev => {
+      const file = ev.target.files && ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => loadImage(key, e.target.result, file.name);
+      reader.readAsDataURL(file);
+    });
+
+    const svg = document.getElementById("svg-" + key);
+    svg.addEventListener("click", ev => placePoint(key, ev));
+
+    document.getElementById("reset-" + key).onclick = () => {
+      viewState(key).points = {};
+      active = null;
+      render(key);
+      msg("Puntos reiniciados: " + key);
+    };
+    render(key);
+  });
+
+  document.getElementById("download").onclick = download;
+  document.getElementById("copy").onclick = copyJSON;
+  document.getElementById("validate").onclick = validate;
+}
+
+function loadImage(key, src, name) {
+  const img = document.getElementById("img-" + key);
+  img.onload = () => {
+    const s = viewState(key);
+    s.imageName = name;
+    s.imageSize = [img.naturalWidth, img.naturalHeight];
+    s.points = {};
+    if (active && active.view === key) active = null;
+    const svg = document.getElementById("svg-" + key);
+    svg.setAttribute("viewBox", "0 0 " + img.naturalWidth + " " + img.naturalHeight);
+    document.getElementById("hint-" + key).style.display = "none";
+    render(key);
+    msg("Cargada " + name + " (" + img.naturalWidth + "x" + img.naturalHeight + ")");
+  };
+  img.onerror = () => msg("No se pudo cargar la imagen: " + name + ". Usa el selector de archivo.");
+  img.src = src;
+}
+
+function nextUnfilled(key) {
+  const pts = viewState(key).points;
+  const found = pointList(key).find(p => !(p[0] in pts));
+  return found ? found[0] : null;
+}
+
+function placePoint(key, ev) {
+  const s = viewState(key);
+  if (!s.imageSize) { msg("Carga una imagen primero"); return; }
+  const id = (active && active.view === key) ? active.id : nextUnfilled(key);
+  if (!id) { msg("Todos los puntos están marcados; pulsa uno para corregirlo"); return; }
+  const svg = document.getElementById("svg-" + key);
+  const rect = svg.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+  const x = (ev.clientX - rect.left) / rect.width * s.imageSize[0];
+  const y = (ev.clientY - rect.top) / rect.height * s.imageSize[1];
+  if (x < 0 || y < 0 || x > s.imageSize[0] || y > s.imageSize[1]) return;
+  s.points[id] = [Math.round(x * 10) / 10, Math.round(y * 10) / 10];
+  active = { view: key, id: nextUnfilled(key) };
+  render(key);
+}
+
+function render(key) {
+  renderList(key);
+  renderMarkers(key);
+  const s = viewState(key);
+  const total = pointList(key).length;
+  const done = Object.keys(s.points).length;
+  document.getElementById("status-" + key).innerHTML =
+    (s.imageName ? s.imageName + "<br>" : "") + "<b>" + done + " / " + total + "</b> puntos";
+}
+
+function renderList(key) {
+  const box = document.getElementById("points-" + key);
+  box.innerHTML = "";
+  pointList(key).forEach(([id, label], index) => {
+    const b = document.createElement("button");
+    const done = id in viewState(key).points;
+    b.textContent = (index + 1) + ". " + label + (done ? "  ✓" : "");
+    if (done) b.className = "done";
+    if (active && active.view === key && active.id === id) b.className = "active";
+    b.onclick = () => { active = { view: key, id }; render(key); };
+    box.appendChild(b);
+  });
+}
+
+function renderMarkers(key) {
+  const svg = document.getElementById("svg-" + key);
+  [...svg.querySelectorAll("g.marker")].forEach(n => n.remove());
+  const s = viewState(key);
+  pointList(key).forEach(([id], index) => {
+    if (!(id in s.points)) return;
+    const [x, y] = s.points[id];
+    const g = document.createElementNS(SVG_NS, "g");
+    g.setAttribute("class", "marker");
+    const c = document.createElementNS(SVG_NS, "circle");
+    c.setAttribute("cx", x);
+    c.setAttribute("cy", y);
+    c.setAttribute("r", Math.max(6, (s.imageSize[0] || 1000) * 0.009));
+    c.setAttribute("fill", "rgba(99,212,194,.25)");
+    c.setAttribute("stroke", "#63d4c2");
+    c.setAttribute("stroke-width", Math.max(2, (s.imageSize[0] || 1000) * 0.003));
+    const t = document.createElementNS(SVG_NS, "text");
+    t.setAttribute("x", x + (s.imageSize[0] || 1000) * 0.012);
+    t.setAttribute("y", y - (s.imageSize[0] || 1000) * 0.008);
+    t.setAttribute("fill", "#ffffff");
+    t.setAttribute("font-size", Math.max(16, (s.imageSize[0] || 1000) * 0.022));
+    t.textContent = String(index + 1);
+    g.appendChild(c);
+    g.appendChild(t);
+    svg.appendChild(g);
+  });
+}
+
+function rounded(n) { return Math.round(n * 100) / 100; }
+function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+function p(key, id) { return state[key].points[id] || null; }
+
+function buildRatios() {
+  const r = {};
+  const f = state.front;
+  const a = p("front", "ojo_izq_interno");
+  const b = p("front", "ojo_der_interno");
+  const jawL = p("front", "mandibula_izq");
+  const jawR = p("front", "mandibula_der");
+  const hair = p("front", "linea_cabello_centro");
+  const chin = p("front", "menton");
+  const nose = p("front", "nariz_punta");
+  if (a && b) r.interocular_px = rounded(dist(a, b));
+  if (jawL && jawR) r.ancho_mandibula_px = rounded(dist(jawL, jawR));
+  if (hair && chin) r.alto_rostro_px = rounded(dist(hair, chin));
+  if (nose && chin) r.nariz_a_menton_px = rounded(dist(nose, chin));
+  if (r.interocular_px && r.ancho_mandibula_px)
+    r.ratio_interocular_sobre_mandibula = rounded(r.interocular_px / r.ancho_mandibula_px);
+  if (r.alto_rostro_px && r.ancho_mandibula_px)
+    r.ratio_alto_sobre_ancho = rounded(r.alto_rostro_px / r.ancho_mandibula_px);
+  if (r.nariz_a_menton_px && r.alto_rostro_px)
+    r.ratio_tercio_inferior = rounded(r.nariz_a_menton_px / r.alto_rostro_px);
+
+  const pr = state.profile;
+  const root = p("profile", "nariz_raiz");
+  const tip = p("profile", "nariz_punta_perfil");
+  const ear = p("profile", "oreja_centro");
+  const neck = p("profile", "nuca");
+  if (root && tip) r.proyeccion_nasal_px = rounded(Math.abs(tip[0] - root[0]));
+  if (ear && neck) r.oreja_a_nuca_px = rounded(dist(ear, neck));
+  return r;
+}
+
+function payload() {
+  return {
+    schema_version: 1,
+    generated_by: "docs/avatar/local/tools/landmark_picker.html",
+    generated_at_utc: new Date().toISOString(),
+    privacy: { uploaded_to_external_services: false, network_requests: 0 },
+    coordinate_space: "pixeles de la imagen original, origen arriba-izquierda",
+    eyebrow_cut: "derecha_anatomica",
+    views: {
+      front: {
+        image_name: state.front.imageName,
+        image_size: state.front.imageSize,
+        points: state.front.points
+      },
+      profile: {
+        image_name: state.profile.imageName,
+        image_size: state.profile.imageSize,
+        points: state.profile.points
+      }
+    },
+    ratios: buildRatios()
+  };
+}
+
+function validate() {
+  const missing = [];
+  Object.keys(VIEWS).forEach(key => {
+    if (!state[key].imageSize) missing.push(key + ": sin imagen");
+    pointList(key).forEach(([id, label]) => {
+      if (!(id in state[key].points)) missing.push(key + ": " + label);
+    });
+  });
+  if (missing.length) {
+    msg("Faltan " + missing.length + " elementos. Primeros: " + missing.slice(0, 3).join(" | "));
+    return false;
+  }
+  msg("Validación OK: todos los puntos marcados");
+  return true;
+}
+
+function download() {
+  if (!validate()) return;
+  const blob = new Blob([JSON.stringify(payload(), null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "proportions.json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  msg("Descargado proportions.json");
+}
+
+async function copyJSON() {
+  if (!validate()) return;
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(payload(), null, 2));
+    msg("JSON copiado al portapapeles");
+  } catch (e) {
+    msg("No se pudo copiar; usa Descargar");
+  }
+}
+
+buildUI();
+</script>
+</body>
+</html>

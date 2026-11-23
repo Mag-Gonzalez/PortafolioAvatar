@@ -39,3 +39,24 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+.env*.local
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Avatar — privacidad (no subir fotos ni derivados)
+docs/avatar/prepared/
+docs/avatar/originals/
+docs/avatar/*.jpg
+docs/avatar/*.jpeg
+docs/avatar/local/checkpoints/
+docs/avatar/local/exports/
+docs/avatar/local/config/proportions.json

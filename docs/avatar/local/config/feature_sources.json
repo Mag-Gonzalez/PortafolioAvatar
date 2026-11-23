@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "note": "Mapa foto -> rasgo aprobado para la fase 1. Solo lectura: ningún script copia, modifica ni sube estas imágenes.",
+  "image_dir": "../../prepared/optimized",
+  "eyebrow_cut": {
+    "side": "derecha_anatomica",
+    "note": "Confirmado por Miguel Ángel: aparece a la izquierda en una foto frontal. Referencias: IMG_5103 e IMG_4582."
+  },
+  "ears_reference": "IMG_4553_2048.jpg",
+  "views": {
+    "front": "IMG_5306_2048.jpg",
+    "three_quarter": "IMG_4582_2048.jpg",
+    "profile": "IMG_4553_2048.jpg"
+  },
+  "features": {
+    "head_shape_jaw": {
+      "primary": "IMG_4582_2048.jpg",
+      "support": ["IMG_5306_2048.jpg", "IMG_5309_2048.jpg"],
+      "notes": "Ovalo alargado y mandíbula definida."
+    },
+    "eyes": {
+      "primary": "IMG_5103_2048.jpg",
+      "support": ["IMG_4582_2048.jpg", "IMG_5309_2048.jpg"],
+      "notes": "Primer plano con mejor exposición; no usar para distancia interocular."
+    },
+    "eyebrows_and_cut": {
+      "primary": "IMG_5103_2048.jpg",
+      "support": ["IMG_4582_2048.jpg", "IMG_4553_2048.jpg"],
+      "notes": "Corte en ceja derecha anatómica. Ignorar espejo circular."
+    },
+    "nose": {
+      "primary": "IMG_4582_2048.jpg",
+      "support": ["IMG_5309_2048.jpg", "IMG_4553_2048.jpg"],
+      "notes": "Mediana, punta redondeada; el perfil es reflected, usar con cautela."
+    },
+    "lips": {
+      "primary": "IMG_4582_2048.jpg",
+      "support": ["IMG_5306_2048.jpg", "IMG_5103_2048.jpg"],
+      "notes": "Labios medianos, expresión relajada."
+    },
+    "ears": {
+      "primary": "IMG_4553_2048.jpg",
+      "support": ["IMG_4582_2048.jpg", "IMG_5309_2048.jpg"],
+      "notes": "Confirmado por Miguel Ángel. Es reflejo parcial con espejo circular."
+    },
+    "facial_hair": {
+      "primary": "IMG_5103_2048.jpg",
+      "support": ["IMG_4582_2048.jpg"],
+      "notes": "Bigote ligero y chivera corta."
+    },
+    "hair_and_hairline": {
+      "primary": "IMG_5306_2048.jpg",
+      "support": ["IMG_4553_2048.jpg", "IMG_5309_2048.jpg"],
+      "notes": "Negro, línea de nacimiento y fade; mayor detalle de bordes."
+    },
+    "glasses": {
+      "primary": "IMG_4582_2048.jpg",
+      "support": ["IMG_5103_2048.jpg", "IMG_5309_2048.jpg", "IMG_4553_2048.jpg"],
+      "notes": "Rectangulares metálicas finas; reflejo azul = artefacto."
+    },
+    "chain": {
+      "primary": "IMG_4582_2048.jpg",
+      "support": [],
+      "notes": "Cadena fina con dije, geometría separada."
+    }
+  },
+  "excluded_from_face_stage": {
+    "IMG_5053_2048.jpg": "Única referencia corporal, con indumentaria distinta a la final; se usa en una fase posterior."
+  },
+  "artifacts_to_ignore": [
+    "Reflejo azul en lentes de IMG_4553, IMG_4582 e IMG_5103",
+    "Espejo circular y reflejo de nuca en IMG_4553",
+    "Fondo estampado en IMG_5306"
+  ]
+}

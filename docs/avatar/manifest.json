@@ -1,0 +1,413 @@
+{
+  "generated_at_utc": "2026-11-23T21:11:44.098988+00:00",
+  "purpose": "Local preparation of photographic references for future 3D avatar work.",
+  "privacy": {
+    "uploaded_to_external_services": false,
+    "generation_started": false,
+    "platform_selected": null,
+    "note": "All operations performed locally. No photo, crop, texture, model or personal data uploaded."
+  },
+  "avatar_reference_views": {
+    "status": "cp000_presentation aprobado visualmente como escenario de referencias; sin geometria facial",
+    "checkpoint": "docs/avatar/local/checkpoints/cp000_presentation.blend",
+    "true_profile_available": false,
+    "note": "No existe una vista de perfil verdadera entre las seis fotografias. IMG_4553 se conserva como referencia oblicua complementaria; no se transformo para simular un perfil. No se buscaron ni usaron fotos externas.",
+    "views": {
+      "front": {
+        "image": "IMG_5306_2048.jpg",
+        "role": "frontal"
+      },
+      "threequarter": {
+        "image": "IMG_4582_2048.jpg",
+        "role": "tres cuartos"
+      },
+      "oblique": {
+        "image": "IMG_4553_2048.jpg",
+        "role": "oblicua / referencia complementaria",
+        "true_profile": false
+      }
+    },
+    "profile_landmarks_status": "pendientes de una vista de perfil real; no se inventan ni se usan para la fase de rostro",
+    "presentation_scale_note": "La escala de los planos y de los marcos de revision es solo presentacion visual; no es una medida anatomica."
+  },
+  "environment": {
+    "python": "3.11.9",
+    "pillow": "12.3.0",
+    "blender": {
+      "installed": true,
+      "version": "5.3.0",
+      "executable": "C:\\Program Files\\Blender Foundation\\Blender 5.3\\blender.exe",
+      "verified_with": "blender --version",
+      "build_date": "2026-11-10",
+      "build_hash": "02f0899d78e3",
+      "build_branch": "blender-v5.3-release",
+      "in_current_shell_path": false,
+      "note": "Available via absolute path; PATH may require reopening the terminal."
+    }
+  },
+  "exposure_policy": {
+    "decision": "no adjustment applied",
+    "reason": "All luminance means fall between 95.4 and 145.0 with near-full dynamic range; any change risked altering real appearance.",
+    "per_photo": {
+      "IMG_4553.jpeg": {
+        "mean": 132.22,
+        "p1": 6,
+        "p99": 244
+      },
+      "IMG_4582.jpeg": {
+        "mean": 112.31,
+        "p1": 11,
+        "p99": 230
+      },
+      "IMG_5053.jpeg": {
+        "mean": 136.39,
+        "p1": 2,
+        "p99": 255
+      },
+      "IMG_5103.jpeg": {
+        "mean": 144.98,
+        "p1": 4,
+        "p99": 245
+      },
+      "IMG_5306.jpeg": {
+        "mean": 104.16,
+        "p1": 2,
+        "p99": 246
+      },
+      "IMG_5309.jpeg": {
+        "mean": 95.39,
+        "p1": 4,
+        "p99": 242
+      }
+    }
+  },
+  "originals": {
+    "directory": "C:\\Users\\USUARIO\\Downloads\\fotos",
+    "unchanged_verified": true,
+    "final_sha256": {
+      "IMG_4553.jpeg": "c7e8c9df96e5e4d3af411366c2a6413d39434e5af5d67415aa72c274778a8185",
+      "IMG_4582.jpeg": "ba3547e3e41ced639d38b3df3fb35fff10c095e8fddb27eea9deac68c74e252b",
+      "IMG_5053.jpeg": "a903e5e7bc557d2a6cf2ea5a298ac0da337da79224e76978e8a0ee6443abdbcd",
+      "IMG_5103.jpeg": "fadd3faf186e605dec663cfd7cc9c4e6003ed3fe7d94c9dfe8f5183b269e2fb2",
+      "IMG_5306.jpeg": "0d7191bcfb8b465f7dea5666f7b0d3ec4725d57c2f3ed0e8d234cc11e297b2d1",
+      "IMG_5309.jpeg": "471f8490798172b71e54aaca9d4fe500998d94b64c0b496839df91588adc151e"
+    }
+  },
+  "photos": [
+    {
+      "source_name": "IMG_4553.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_4553.jpeg",
+      "source_sha256": "c7e8c9df96e5e4d3af411366c2a6413d39434e5af5d67415aa72c274778a8185",
+      "source_bytes": 1622452,
+      "copy_sha256": "c7e8c9df96e5e4d3af411366c2a6413d39434e5af5d67415aa72c274778a8185",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 5,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 132.22,
+        "p1": 6,
+        "p99": 244
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_4553.jpg",
+        "sha256": "719e6fac48b07aace42800d7fe94a2a31cfa0d51d472eb8f9beb6e3e62e8ead6",
+        "bytes": 1812685,
+        "size": [
+          2316,
+          3088
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_4553_2048.jpg",
+        "sha256": "be60baa8912615f81a70ecae63b24b8a91aaf2a31491460bb721e8d6b7584e3d",
+        "bytes": 750819,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_4553_1024.jpg",
+        "sha256": "f9da8291939ca12a90e087d111cd988509f07e5898a909e705008aa0e564f267",
+        "bytes": 178103,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    },
+    {
+      "source_name": "IMG_4582.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_4582.jpeg",
+      "source_sha256": "ba3547e3e41ced639d38b3df3fb35fff10c095e8fddb27eea9deac68c74e252b",
+      "source_bytes": 1429564,
+      "copy_sha256": "ba3547e3e41ced639d38b3df3fb35fff10c095e8fddb27eea9deac68c74e252b",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 5,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 112.31,
+        "p1": 11,
+        "p99": 230
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_4582.jpg",
+        "sha256": "c177fec11ca506ff721283566739a0602b66eb9b08b8dd98747728cc7818eb0e",
+        "bytes": 1750962,
+        "size": [
+          2316,
+          3088
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_4582_2048.jpg",
+        "sha256": "0919301bbbf4eb5b0c34915181c3cd925264796fd8117d487fd4af4d2d76c471",
+        "bytes": 774211,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_4582_1024.jpg",
+        "sha256": "e0c8eb3bf79d33f8acf8b004ae9b4b1f0510b8d009e9b405c8acc8f3b7b4f56b",
+        "bytes": 153948,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    },
+    {
+      "source_name": "IMG_5053.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_5053.jpeg",
+      "source_sha256": "a903e5e7bc557d2a6cf2ea5a298ac0da337da79224e76978e8a0ee6443abdbcd",
+      "source_bytes": 2395666,
+      "copy_sha256": "a903e5e7bc557d2a6cf2ea5a298ac0da337da79224e76978e8a0ee6443abdbcd",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 6,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 136.39,
+        "p1": 2,
+        "p99": 255
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_5053.jpg",
+        "sha256": "d37630103e40f136d8dd6436bdbd35ed66ad9b5877fd1fd25d11acf0432f47a4",
+        "bytes": 2704619,
+        "size": [
+          3024,
+          4032
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_5053_2048.jpg",
+        "sha256": "fb171af595977949863ffae0e8cb0b19ce7d19be3114a242117d91b4e2b37130",
+        "bytes": 695119,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_5053_1024.jpg",
+        "sha256": "2cd7f334f054a0b67bf5fd51a6d79e6ffe69b81e6f17ce9fb34bc1285e919c5e",
+        "bytes": 154897,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    },
+    {
+      "source_name": "IMG_5103.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_5103.jpeg",
+      "source_sha256": "fadd3faf186e605dec663cfd7cc9c4e6003ed3fe7d94c9dfe8f5183b269e2fb2",
+      "source_bytes": 1580862,
+      "copy_sha256": "fadd3faf186e605dec663cfd7cc9c4e6003ed3fe7d94c9dfe8f5183b269e2fb2",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 5,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 144.98,
+        "p1": 4,
+        "p99": 245
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_5103.jpg",
+        "sha256": "c335f078bb285ddb6d4d428bcf684ac6f148b1725f808c1aef0b1818cf1eb8e1",
+        "bytes": 1762619,
+        "size": [
+          2316,
+          3088
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_5103_2048.jpg",
+        "sha256": "022e0c60d4925e53bf8461d59eefe37e24cb8777eb0b56051642b1812ebcbda1",
+        "bytes": 679669,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_5103_1024.jpg",
+        "sha256": "0391b14a9a5348ccba3796a40ed2b9b00a2df9976ad0968f01f529ce8778cd22",
+        "bytes": 135942,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    },
+    {
+      "source_name": "IMG_5306.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_5306.jpeg",
+      "source_sha256": "0d7191bcfb8b465f7dea5666f7b0d3ec4725d57c2f3ed0e8d234cc11e297b2d1",
+      "source_bytes": 2328422,
+      "copy_sha256": "0d7191bcfb8b465f7dea5666f7b0d3ec4725d57c2f3ed0e8d234cc11e297b2d1",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 5,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 104.16,
+        "p1": 2,
+        "p99": 246
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_5306.jpg",
+        "sha256": "bc8067a0a6ce2bfeae08cdb02a653c190a761a8e456699befbe021587a35424e",
+        "bytes": 2626629,
+        "size": [
+          2316,
+          3088
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_5306_2048.jpg",
+        "sha256": "d4a545816495eeead86d5e817ddd8c6274aecd32185eb692c5f3446b6a0e6e1e",
+        "bytes": 1132102,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_5306_1024.jpg",
+        "sha256": "e0a4720e6b2e216b14fd9cb78109198272e69d8c585fc64d5147530af1da8c5e",
+        "bytes": 256250,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    },
+    {
+      "source_name": "IMG_5309.jpeg",
+      "source_path": "C:\\Users\\USUARIO\\Downloads\\fotos\\IMG_5309.jpeg",
+      "source_sha256": "471f8490798172b71e54aaca9d4fe500998d94b64c0b496839df91588adc151e",
+      "source_bytes": 2036585,
+      "copy_sha256": "471f8490798172b71e54aaca9d4fe500998d94b64c0b496839df91588adc151e",
+      "copy_verified_identical": true,
+      "exif_orientation_before": 5,
+      "orientation_normalized": true,
+      "exposure": {
+        "mean": 95.39,
+        "p1": 4,
+        "p99": 242
+      },
+      "exposure_action": "none - values within natural range, preserved to keep real appearance",
+      "cleaned": {
+        "relative_path": "prepared/cleaned/IMG_5309.jpg",
+        "sha256": "d99c03e782fa025660493d087ae5baf36f5431a1140f0a01859f8eecbfdbe1d0",
+        "bytes": 2333023,
+        "size": [
+          2316,
+          3088
+        ]
+      },
+      "optimized_2048": {
+        "relative_path": "prepared/optimized/IMG_5309_2048.jpg",
+        "sha256": "7b8ed44366d3bee0ca73804dd4f4e6e36aaa46c2117eb7dcb4d88b2f81dbc23f",
+        "bytes": 1014096,
+        "size": [
+          1536,
+          2048
+        ]
+      },
+      "optimized_1024": {
+        "relative_path": "prepared/optimized/IMG_5309_1024.jpg",
+        "sha256": "67cdb112eda4bcf2b975e341280adf8093b6c57535d2fa2a25acdc8295df350e",
+        "bytes": 217884,
+        "size": [
+          768,
+          1024
+        ]
+      },
+      "transformations": [
+        "exact_copy",
+        "exif_transpose",
+        "metadata_strip",
+        "jpeg_reencode",
+        "aspect_preserving_resize"
+      ]
+    }
+  ],
+  "contact_sheet": {
+    "relative_path": "contact-sheet-prepared.jpg",
+    "sha256": "69685a7c0b07f6ed58eea06a09210dd672b09d1802e3d47dccaa239dfa3eb355",
+    "bytes": 208613,
+    "size": [
+      1360,
+      824
+    ],
+    "layout": "3 columns x 2 rows, ordered as source list"
+  },
+  "pending": [
+    "User review of contact-sheet-prepared.jpg",
+    "Semantic role assignment in PHOTO_MAP.md",
+    "Explicit independent authorization before any upload or 3D generation"
+  ]
+}
