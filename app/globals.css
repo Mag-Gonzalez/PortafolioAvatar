@@ -18,10 +18,22 @@
   --sand-2: #e9ded0;
   --sand-3: #dfd2bf;
   --glass: rgba(225, 245, 255, 0.62);
-  --font-urbanist: "Urbanist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-geist-mono: "Geist Mono", "SFMono-Regular", Consolas, monospace;
-  --font-mono: var(--font-geist-mono), "SFMono-Regular", Consolas, monospace;
+
+  /* Fuentes reales de la referencia, servidas por next/font/local */
+  --font-urbanist: var(--font-urbanist-local), "Urbanist", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: var(--font-profont-local), "ProFontWindows", "Courier New", monospace;
+
+  /* Breakpoints y altura de header extraídos de la referencia */
+  --height-header: 72px;
+  --bp-sm: 480px;
+  --bp-md: 840px;
+  --bp-lg: 1024px;
+  --bp-xl: 1280px;
+  --bp-xxl: 1600px;
+  --bp-xxxl: 1920px;
+
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-smooth: cubic-bezier(0.6, 0, 0.25, 1);
   --gutter: clamp(20px, 4.2vw, 72px);
 }
 
@@ -32,7 +44,8 @@
   --color-blue: var(--blue);
   --color-cyan: var(--cyan);
   --color-ice: var(--ice);
-  --font-sans: var(--font-urbanist), Arial, sans-serif;
+  --font-sans: var(--font-urbanist);
+  --font-mono: var(--font-mono);
 }
 
 /* ==========================================================================

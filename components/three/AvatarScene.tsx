@@ -180,10 +180,15 @@ function Workstation({ children }: { children: React.ReactNode }) {
   const particleGeo = useMemo(() => {
     const count = 40;
     const pos = new Float32Array(count * 3);
+    // Distribución determinista: evita Math.random durante el render.
+    const pseudo = (seed: number) => {
+      const value = Math.sin(seed * 12.9898) * 43758.5453;
+      return value - Math.floor(value);
+    };
     for (let i = 0; i < count; i += 1) {
-      pos[i * 3] = (Math.random() - 0.5) * 4.2;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 2.8 - 0.1;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 3;
+      pos[i * 3] = (pseudo(i + 1) - 0.5) * 4.2;
+      pos[i * 3 + 1] = (pseudo(i + 101) - 0.5) * 2.8 - 0.1;
+      pos[i * 3 + 2] = (pseudo(i + 201) - 0.5) * 3;
     }
     const geo = new THREE.BufferGeometry();
     geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));

@@ -8,6 +8,7 @@ import { ArrowUpRight } from "@/components/ui/Icons";
 import Notch from "@/components/ui/Notch";
 import { useI18n } from "@/lib/i18n";
 import { playClickSound, playHoverSound } from "@/lib/audio";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
 
 const statusLabel: Record<Project["status"], { es: string; en: string }> = {
   disponible: { es: "Disponible", en: "Available" },
@@ -20,6 +21,8 @@ export default function Projects() {
   const root = useRef<HTMLElement>(null);
   const [activeCategory, setActiveCategory] = useState<ProjectCategory>("all");
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
+  useBodyScrollLock(Boolean(selectedProject));
 
   const categories = [
     { id: "all", label: { es: "Todos", en: "All Projects" } },
@@ -79,13 +82,11 @@ export default function Projects() {
   const handleOpenModal = (project: Project) => {
     playClickSound();
     setSelectedProject(project);
-    document.body.style.overflow = "hidden";
   };
 
   const handleCloseModal = () => {
     playClickSound();
     setSelectedProject(null);
-    document.body.style.overflow = "";
   };
 
   return (

@@ -5,7 +5,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LogoMark, SoundOffIcon, SoundOnIcon } from "@/components/ui/Icons";
 import { scrollToSection } from "@/lib/lenis";
 import { useI18n } from "@/lib/i18n";
-import { toggleSound, isSoundEnabled, playClickSound, playHoverSound } from "@/lib/audio";
+import { toggleSound, playClickSound, playHoverSound } from "@/lib/audio";
+import { useBodyScrollLock } from "@/hooks/useBodyScrollLock";
+
+const NAV_LINKS = [
+  { id: "top", label: { es: "Inicio", en: "Home" } },
+  { id: "about", label: { es: "Sobre mí", en: "About" } },
+  { id: "skills", label: { es: "Habilidades", en: "Skills" } },
+  { id: "projects", label: { es: "Proyectos", en: "Projects" } },
+  { id: "experience", label: { es: "Trayectoria", en: "Experience" } },
+  { id: "contact", label: { es: "Contacto", en: "Contact" } },
+] as const;
 
 export default function Header() {
   const { locale, toggleLocale } = useI18n();
@@ -14,14 +24,7 @@ export default function Header() {
   const [sound, setSound] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const links = [
-    { id: "top", label: { es: "Inicio", en: "Home" } },
-    { id: "about", label: { es: "Sobre mí", en: "About" } },
-    { id: "skills", label: { es: "Habilidades", en: "Skills" } },
-    { id: "projects", label: { es: "Proyectos", en: "Projects" } },
-    { id: "experience", label: { es: "Trayectoria", en: "Experience" } },
-    { id: "contact", label: { es: "Contacto", en: "Contact" } },
-  ];
+  useBodyScrollLock(mobileMenuOpen);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -31,7 +34,7 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    const sections = links
+    const sections = NAV_LINKS
       .map((link) => document.getElementById(link.id))
       .filter((element): element is HTMLElement => Boolean(element));
 
@@ -41,7 +44,7 @@ export default function Header() {
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
         if (!visible) return;
-        const index = links.findIndex((link) => link.id === visible.target.id);
+        const index = NAV_LINKS.findIndex((link) => link.id === visible.target.id);
         if (index >= 0) setActive(index);
       },
       { rootMargin: "-40% 0px -40% 0px", threshold: [0, 0.2, 0.6] },
@@ -65,7 +68,6 @@ export default function Header() {
     event.preventDefault();
     playClickSound();
     setMobileMenuOpen(false);
-    document.body.style.overflow = "";
     scrollToSection(id);
   };
 
@@ -73,7 +75,6 @@ export default function Header() {
     playClickSound();
     const next = !mobileMenuOpen;
     setMobileMenuOpen(next);
-    document.body.style.overflow = next ? "hidden" : "";
   };
 
   return (
@@ -102,7 +103,7 @@ export default function Header() {
             animate={{ x: active * 94 }}
             transition={{ type: "spring", stiffness: 340, damping: 32 }}
           />
-          {links.map((link, index) => (
+          {NAV_LINKS.map((link, index) => (
             <a
               key={link.id}
               href={`#${link.id}`}
@@ -175,7 +176,7 @@ export default function Header() {
           >
             <div className="mobile-nav-content">
               <nav className="mobile-nav-links">
-                {links.map((link) => (
+                {NAV_LINKS.map((link) => (
                   <a
                     key={link.id}
                     href={`#${link.id}`}

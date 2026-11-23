@@ -1,6 +1,5 @@
 /**
- * Contenido centralizado y bilingüe (ES / EN) del portafolio de Miguel Angel Gonzalez Muñoz.
- * Inspirado en la estructura y excelencia técnica de david-hckh.com.
+ * Contenido centralizado y bilingüe (ES / EN) del portafolio de Miguel Ángel González Muñoz.
  */
 
 export type Locale = "es" | "en";
@@ -64,12 +63,12 @@ export interface Profile {
 }
 
 export const profile: Profile = {
-  name: "Miguel Angel Gonzalez Muñoz",
-  firstName: "Miguel Angel",
-  lastName: "Gonzalez Muñoz",
+  name: "Miguel Ángel González Muñoz",
+  firstName: "Miguel Ángel",
+  lastName: "González Muñoz",
   role: {
-    es: "Desarrollador Full Stack & Creative Web",
-    en: "Full Stack & Creative Web Developer",
+    es: "Desarrollador de software en formación",
+    en: "Software developer in training",
   },
   location: {
     es: "Colombia (UTC-5)",
@@ -416,12 +415,12 @@ export const projects: Project[] = [
 ];
 
 export const site = {
-  title: "Miguel Angel Gonzalez Muñoz — Desarrollador Full Stack & Creative Web",
-  titleEn: "Miguel Angel Gonzalez Muñoz — Full Stack & Creative Web Developer",
+  title: "Miguel Ángel González Muñoz — Desarrollador de software en formación",
+  titleEn: "Miguel Ángel González Muñoz — Software Developer in Training",
   description:
-    "Portafolio interactivo de Miguel Angel Gonzalez Muñoz, estudiante ADSO SENA. Desarrollo web moderno, experiencias 3D con Three.js, React y Next.js.",
+    "Portafolio de Miguel Ángel González Muñoz, estudiante ADSO del SENA. Desarrollo web, interfaces y proyectos como ReserVa.",
   descriptionEn:
-    "Interactive portfolio of Miguel Angel Gonzalez Muñoz, SENA ADSO student. Modern web engineering, immersive 3D experiences with Three.js, React, and Next.js.",
-  copyright: `© ${new Date().getFullYear()} Miguel Angel Gonzalez Muñoz. Inspirado en david-hckh.com`,
+    "Portfolio of Miguel Ángel González Muñoz, SENA ADSO student. Web development, interfaces, and projects such as ReserVa.",
+  copyright: `© ${new Date().getFullYear()} Miguel Ángel González Muñoz`,
   musicCredit: "Web Audio Synthesizer Engine",
 };
