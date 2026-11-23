@@ -5,7 +5,6 @@
 export type Locale = "es" | "en";
 
 export type ProjectCategory = "all" | "fullstack" | "creative" | "saas";
-export type ProjectStatus = "disponible" | "en-progreso" | "completado";
 
 export interface Project {
   slug: string;
@@ -18,9 +17,6 @@ export interface Project {
   image: string;
   href?: string;
   repository?: string;
-  status: ProjectStatus;
-  year: string;
-  metrics?: string;
 }
 
 export interface SkillItem {
@@ -50,16 +46,6 @@ export interface Profile {
   badge: { es: string; en: string };
   bio: { es: string; en: string };
   philosophy: { es: string; en: string };
-  email: string;
-  socials: Array<{
-    label: string;
-    href: string;
-    icon: "mail" | "github" | "linkedin";
-  }>;
-  stats: Array<{
-    value: string;
-    label: { es: string; en: string };
-  }>;
 }
 
 export const profile: Profile = {
@@ -79,24 +65,13 @@ export const profile: Profile = {
     en: "Available for projects & internships",
   },
   bio: {
-    es: "Estudiante de Análisis y Desarrollo de Software (ADSO) en el SENA. Apasionado por la intersección entre ingeniería de software robusta y experiencias web interactivas en 3D con Three.js, React y Next.js.",
-    en: "Software Analysis and Development (ADSO) student at SENA. Passionate about bridging robust software engineering with immersive 3D interactive web experiences using Three.js, React, and Next.js.",
+    es: "Estudiante de Análisis y Desarrollo de Software (ADSO) en el SENA.",
+    en: "Software Analysis and Development (ADSO) student at SENA.",
   },
   philosophy: {
-    es: "Creo en escribir código limpio, interfaces intuitivas con atención microscópica al detalle y construir productos que no solo funcionen a la perfección, sino que se sientan vivos e interactivos.",
-    en: "I believe in clean maintainable code, intuitive interfaces with microscopic attention to detail, and building digital products that not only work seamlessly but feel alive and responsive.",
+    es: "",
+    en: "",
   },
-  email: "miguel.gonzalez.dev@gmail.com",
-  socials: [
-    { label: "Email", href: "mailto:miguel.gonzalez.dev@gmail.com", icon: "mail" },
-    { label: "GitHub", href: "https://github.com", icon: "github" },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" },
-  ],
-  stats: [
-    { value: "+2", label: { es: "Años de formación técnica", en: "Years technical study" } },
-    { value: "4+", label: { es: "Proyectos integrales creados", en: "Full-scale projects built" } },
-    { value: "100%", label: { es: "Compromiso y detalle visual", en: "Commitment & visual polish" } },
-  ],
 };
 
 export const skillsData: SkillItem[] = [
@@ -280,137 +255,21 @@ export const projects: Project[] = [
     slug: "reserva",
     category: "saas",
     name: "ReserVa",
-    year: "2025",
-    shortDesc: {
-      es: "Sistema web de gestión de mesas y reservas en tiempo real para restaurantes.",
-      en: "Real-time table reservation and restaurant management web system.",
-    },
-    description: {
-      es: "Plataforma integral diseñada para optimizar la operativa gastronómica. Permite a los clientes reservar mesas con visualización de aforo en vivo, mientras los administradores gestionan turnos, cancelaciones y cartas digitales con sincronización instantánea.",
-      en: "Comprehensive platform engineered to streamline restaurant operations. Allows customers to book tables with live occupancy previews while managers control shifts, cancellations, and digital menus with instant sync.",
-    },
-    highlights: {
-      es: [
-        "Selector interactivo de mesas en tiempo real con estados de ocupación",
-        "Panel administrativo con métricas de aforo y cancelaciones",
-        "Diseño responsive adaptado a tablets para meseros y smartphones para clientes",
-        "Autenticación segura y panel de control por roles",
-      ],
-      en: [
-        "Interactive real-time table selector with live occupancy states",
-        "Admin dashboard featuring capacity metrics and booking analytics",
-        "Responsive layout optimized for waiter tablets and customer smartphones",
-        "Role-based access control and secure authentication",
-      ],
-    },
-    technologies: ["React", "Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
-    image: "/assets/projects/reserva.svg",
-    href: "https://github.com",
-    repository: "https://github.com",
-    status: "disponible",
-    metrics: "Optimizado para +100 mesas simultáneas",
+    shortDesc: { es: "Desarrollo web", en: "Web development" },
+    description: { es: "Proyecto de desarrollo web.", en: "Web development project." },
+    highlights: { es: [], en: [] },
+    technologies: [],
+    image: "",
   },
   {
-    slug: "devspace-3d",
+    slug: "zarfa",
     category: "creative",
-    name: "DevSpace 3D Portfolio",
-    year: "2025",
-    shortDesc: {
-      es: "Experiencia de portafolio inmersiva inspirada en WebGL y arquitectura cinemática.",
-      en: "Immersive portfolio experience inspired by WebGL and cinematic architecture.",
-    },
-    description: {
-      es: "Sitio web de portafolio que traslada la visión interactiva de david-hckh.com al ecosistema Next.js. Incluye un avatar 3D fiel modelado proceduralmente, renderizado R3F, control de cámara por scroll y paneles HUD holográficos.",
-      en: "Portfolio platform translating david-hckh.com's interactive vision into Next.js. Features a procedural 3D avatar modeled accurately after the developer, R3F rendering, scroll camera rig, and floating HUD panels.",
-    },
-    highlights: {
-      es: [
-        "Avatar 3D procedural con seguimiento de cursor y rasgos faciales exactos",
-        "Sincronización cinemática con Lenis y GSAP ScrollTrigger",
-        "Sintetizador de sonido interactivo con Web Audio API",
-        "Soporte bilingüe instantáneo (ES / EN) y modo de accesibilidad",
-      ],
-      en: [
-        "Procedural 3D avatar with cursor tracking and accurate facial features",
-        "Cinematic scroll orchestration with Lenis and GSAP ScrollTrigger",
-        "Interactive sound synthesizer powered by the Web Audio API",
-        "Instant bilingual support (ES / EN) and reduced motion accessibility",
-      ],
-    },
-    technologies: ["Three.js", "React Three Fiber", "GSAP", "Lenis", "TypeScript"],
-    image: "/assets/projects/devspace-3d.svg",
-    href: "#top",
-    repository: "https://github.com",
-    status: "disponible",
-    metrics: "60 FPS estables con bajo consumo de memoria",
-  },
-  {
-    slug: "adso-inventory",
-    category: "fullstack",
-    name: "ADSO Inventory Cloud",
-    year: "2024",
-    shortDesc: {
-      es: "Sistema empresarial de control de inventario y trazabilidad de activos.",
-      en: "Enterprise inventory control and asset traceability cloud system.",
-    },
-    description: {
-      es: "Aplicación desarrollada en el marco del programa ADSO SENA para la gestión de suministros en almacenes. Incorpora control de entradas y salidas por código, alertas de stock mínimo, generación de reportes PDF y auditoría de movimientos.",
-      en: "Application developed within SENA ADSO for warehouse supply and asset tracking. Features stock in/out logging, barcode support, minimum stock alerts, PDF reporting, and audit logs.",
-    },
-    highlights: {
-      es: [
-        "Control granular de stock con historial inmutable de movimientos",
-        "Generación automática de reportes de rotación y valoración de activos",
-        "Validación de esquemas con TypeScript y Zod",
-        "Base de datos relacional con claves foráneas e integridad estricta",
-      ],
-      en: [
-        "Granular inventory tracking with immutable movement logs",
-        "Automated PDF export for inventory turnover and asset valuation",
-        "Schema validation using TypeScript and Zod",
-        "Relational database design with strict foreign key constraints",
-      ],
-    },
-    technologies: ["TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS"],
-    image: "/assets/projects/adso-inventory.svg",
-    href: "https://github.com",
-    repository: "https://github.com",
-    status: "completado",
-    metrics: "Trazabilidad de +5,000 referencias",
-  },
-  {
-    slug: "soundwave-studio",
-    category: "creative",
-    name: "SoundWave Web Audio",
-    year: "2024",
-    shortDesc: {
-      es: "Visualizador tridimensional interactivo reactivo a frecuencias sonoras.",
-      en: "Interactive 3D sound visualizer reacting to audio frequencies.",
-    },
-    description: {
-      es: "Laboratorio creativo que fusiona Web Audio API con Three.js. Analiza el espectro de frecuencias de audio en tiempo real para deformar mallas tridimensionales con shaders GLSL y crear una experiencia inmersiva reactiva.",
-      en: "Creative playground merging Web Audio API with Three.js. Analyzes real-time frequency data through FFT nodes to displace 3D meshes with GLSL shaders in an immersive audio visualizer.",
-    },
-    highlights: {
-      es: [
-        "Análisis FFT en tiempo real con Web Audio API",
-        "Shaders GLSL procedurales con deformación por ruido Perlin",
-        "Controles de iluminación reactiva y paletas de color dinámicas",
-        "Modo interactivo con micrófono en vivo o pistas de audio",
-      ],
-      en: [
-        "Real-time FFT audio frequency analysis with Web Audio API",
-        "Procedural GLSL vertex shaders with Perlin noise displacement",
-        "Reactive lighting controls and dynamic color gradient palettes",
-        "Interactive microphone mode and audio track playback",
-      ],
-    },
-    technologies: ["Web Audio API", "Three.js", "GLSL", "React", "Canvas API"],
-    image: "/assets/projects/soundwave.svg",
-    href: "https://github.com",
-    repository: "https://github.com",
-    status: "disponible",
-    metrics: "Latencia de análisis < 16ms",
+    name: "ZARFA",
+    shortDesc: { es: "Proyecto musical", en: "Music project" },
+    description: { es: "Proyecto musical.", en: "Music project." },
+    highlights: { es: [], en: [] },
+    technologies: [],
+    image: "",
   },
 ];
 
@@ -422,5 +281,5 @@ export const site = {
   descriptionEn:
     "Portfolio of Miguel Ángel González Muñoz, SENA ADSO student. Web development, interfaces, and projects such as ReserVa.",
   copyright: `© ${new Date().getFullYear()} Miguel Ángel González Muñoz`,
-  musicCredit: "Web Audio Synthesizer Engine",
+  musicCredit: "",
 };
