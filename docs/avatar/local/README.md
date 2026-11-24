@@ -180,6 +180,48 @@ Después de `cp006` se decide si se exporta `head_v01.glb`. **No se modela el cu
 - ✅ **cp000 ejecutado**: `checkpoints/cp000_references.blend`, tres renders PNG, lámina de contacto y manifiesto JSON. `modeling_started = false`: todavía no existe geometría del avatar.
 - ✅ **Diagnóstico y reparación de cp000 (2026-11-23):** los materiales tenían el `Output` activo conectado al Principled blanco y la textura en un `Output` inactivo; se limpió el árbol de nodos y se dejó una sola salida `imagen → emisión → superficie`. Renders y lámina regenerados. Verificación por proyección de cámara: correlación 0,977 / 0,989 / 0,977 con las tres fotos; los tres tiles de la lámina coinciden exactamente con sus renders. Originales, `prepared/` y banderas de privacidad verificados sin cambios.
 - ✅ **cp000_presentation (2026-11-23):** nuevo checkpoint sin sobrescribir el anterior. `ortho_scale` 0,34 → 0,46 y `shift = 0` en las tres cámaras, para mostrar la fotografía completa sin recorte ni lens shift; planos, rotaciones y archivos de imagen intactos. La tercera vista se llama ahora **OBLICUA** (`CAM_OBLIQUE`, `REF_OBLIQUE_4553`, render `_oblique.png`, etiqueta `OBLICUA`). No existe perfil verdadero: los landmarks y ratios de perfil del picker quedan **pendientes**, sin inventar datos. La escala de planos/marcos es presentacional, no anatómica; `manifest.json` ya lo registra.
-- ⏳ Revisión visual de la lámina `cp000_presentation_contact_sheet.png` por Miguel Ángel: **pendiente**.
-- ⏳ `config/proportions.json` generado con el picker: **pendiente**; mientras tanto los planos usan 0,40 m por defecto. Solo se usarán landmarks frontales hasta que exista un perfil real.
+- ✅ `config/proportions.json` generado con el picker y copiado tras validación: 15 landmarks frontales reales, `image_size = [1536, 2048]`, perfil `pendiente` sin coordenadas ni proporciones inventadas. El archivo está excluido de Git por privacidad.
+- ✅ **cp001_blockout (2026-11-24):** nuevo checkpoint `checkpoints/cp001_blockout.blend` creado desde `cp000_presentation.blend`. Escala calibrada desde `linea_cabello_centro → mentón`: `0,00032375 m/px`, rostro `0,17 m`, mandíbula `0,136 m`, planos de referencia recalibrados a `0,663 m`. Incluye cabeza, mandíbula, orejas, nariz, ojos, cejas (con corte en la derecha anatómica), labios, bigote, chivera, cabello y gafas metálicas delgadas. Profundidad estilizada por ausencia de perfil verdadero. Sin cuerpo, ropa ni texturas fotográficas. Renders `cp001_blockout_front.png` y `cp001_blockout_threequarter.png` más lámina de revisión.
+- ⏳ Revisión visual de `cp001_blockout_contact_sheet.png` por Miguel Ángel: **pendiente**.
 - 🔒 Ninguna foto, recorte, textura ni dato salió de este equipo. No se crearon cuentas ni se iniciaron generaciones.
+
+---
+
+## 10. Nueva dirección — reconstrucción del avatar original (2026-11-24)
+
+El diseño de `cp001_blockout` quedó **descartado como referencia visual** y se conserva solo como antecedente técnico. La referencia definitiva es `docs/avatar/source/avatar_complete.jpg`, una composición de seis vistas (3 × 2). No se usaron las fotos personales ni `proportions.json` para definir el nuevo diseño.
+
+### 10.1 Referencias preparadas
+
+- Original intacto: `docs/avatar/source/avatar_complete.jpg` (`1792 × 2390`, SHA256 verificado localmente).
+- Seis recortes no destructivos en `docs/avatar/local/references/turnaround/view_r{1,2}_c{1,2,3}.png`.
+- Análisis local solo con Pillow: paleta, máscaras de piel/cabello/prenda, siluetas y mapas de color. No se usó ningún servicio externo ni modelo de visión remoto.
+- Asignación preliminar de vistas: `r1c1` frontal, `r1c2` tres cuartos derecho, `r1c3` perfil derecho; fila 2 = tres cuartos/perfil izquierdos y vistas posteriores. La asignación exacta queda marcada como preliminar en los metadatos porque el modelo que ejecuta el análisis no puede interpretar píxeles directamente.
+
+### 10.2 Checkpoints nuevos
+
+- `checkpoints/cp002_character_v1.blend`: primera reconstrucción completa desde cero. Sin usar geometría de `cp001`.
+- `checkpoints/cp003_character_v2.blend`: versión corregida; las 43 mallas skinneadas tienen al armature como padre, nombres de datos inventariados y GLB exportado sin advertencias de glTF.
+- Ambos checkpoints son independientes; **no se sobrescribieron** `cp000_presentation.blend`, `cp001_blockout.blend` ni `proportions.json`.
+
+### 10.3 Contenido de `cp003_character_v2`
+
+- Cabeza volumétrica, orejas, nariz, ojos azules, párpados, cejas, labios y cabello oscuro con mechones.
+- Torso, cuello, brazos y manos desnudos, prenda gris oscura, caderas, piernas y pies neutros.
+- 43 objetos malla, 12 materiales Principled sin texturas, 18 huesos (`root`, `hips`, `spine`, `chest`, `neck`, `head`, extremidades).
+- Rig simple humanode compatible con glTF; cada malla tiene grupos de vértices y modificador `ARMATURE`.
+- Exportación: `exports/cp003_character_v2.glb` (715.900 bytes, 62 nodos, 43 mallas, 12 materiales, 1 skin, **0 imágenes y 0 texturas**).
+- Renders: frontal, perfil izquierdo, perfil derecho, tres cuartos, espalda y completo, todos `720 × 1080`, más `cp003_character_v2_contact_sheet.png`.
+
+### 10.4 Limitaciones documentadas
+
+- La composición está recortada a la cintura: piernas y pies son inferidos deliberadamente neutros, no una copia verificada de la referencia.
+- No existen medidas de perfil; la profundidad facial es una convención visual derivada de las siluetas, no una medición antropométrica.
+- La forma exacta de los mechones y el escote son aproximaciones de silueta/color, no réplicas píxel a píxel.
+- El asignador de vistas y la interpretación de detalles finos deben confirmarse visualmente; por eso el modelo se entrega como v1/v2 validada numéricamente, no como réplica definitiva.
+
+### 10.5 Privacidad
+
+- `docs/avatar/source/`, `docs/avatar/local/references/` y `public/assets/avatar/` se añadieron a `.gitignore`.
+- El `.blend` y el GLB no contienen imágenes de referencia incrustadas; solo geometría y materiales procedurales.
+- No se subieron archivos, no se usaron APIs ni plataformas de generación 3D.

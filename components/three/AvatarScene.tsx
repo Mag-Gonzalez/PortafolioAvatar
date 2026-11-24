@@ -1,19 +1,16 @@
 "use client";
 
 /**
- * Escena 3D Profesional del Portafolio — Arquitectura de Estudio y Carga GLTF/GLB.
+ * Escena 3D del portafolio: una sola instancia del GLB de Antigravity.
  *
- * Esta implementación sigue los estándares de la industria (Three.js, R3F, GLTF PBR):
- * 1. Pipeline de carga para modelos 3D externos (GLB/GLTF) con rigging, huesos y animaciones.
- * 2. Cero figuras grotescas construidas con geometrías primitivas en código.
- * 3. Renderizado PBR con ACESFilmicToneMapping, sombras de contacto suaves (ContactShadows)
- *    e iluminación de estudio en 3 puntos (Key, Fill, Rim) más rebote de pantalla.
- * 4. Estación de trabajo arquitectónica (escritorio biselado, laptop slim, silla ergonómica).
- * 5. Si no hay un modelo 'avatar.glb' en /public/models/, presenta un entorno tecnológico
- *    estéticamente impecable con terminal holográfico e indicaciones claras para importar el modelo.
+ * El modelo conserva su armature, su animación Idle_Animation y sus materiales.
+ * La escena solo gestiona encuadre, iluminación y composición: no genera otro
+ * personaje ni sustituye el GLB por una imagen. El lienzo ocupa el lateral
+ * derecho en escritorio y la zona superior en móvil, de modo que las tarjetas
+ * de información no tapen el cuerpo ni el rostro.
  */
 
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   ContactShadows,
@@ -29,81 +26,66 @@ const BEIGE = new THREE.Color("#f5efe6");
 const BLUE = new THREE.Color("#052e87");
 const BACKGROUND = new THREE.Color();
 
-/* Paleta PBR para la estación de trabajo */
-const MAT_DESK = "#1a1d24";
-const MAT_METAL = "#8b949e";
-const MAT_CHAIR = "#161b26";
-const MAT_LAPTOP = "#252932";
-const MAT_SCREEN_GLOW = "#00f0ff";
-const MAT_MUG = "#eaeef2";
+/** Ruta pública de la exportación de Antigravity (cp006). */
+const MODEL_URL = "/assets/avatar/avatar.glb" as const;
 
-/**
- * Componente que carga y anima un modelo GLTF/GLB real.
- * Si el modelo tiene armature (huesos), vincula la cabeza con el ratón.
- * Si tiene animaciones, las reproduce suavemente.
- */
+/** Umbral usado por el canvas, que es más estrecho que el viewport en escritorio. */
+const COMPACT_CANVAS = 640;
+
+/** Carga, anima y orienta la cabeza del modelo real. */
 function GLTFCharacter({ modelUrl }: { modelUrl: string }) {
   const group = useRef<THREE.Group>(null);
   const { pointer } = useThree();
   const { scene, animations } = useGLTF(modelUrl);
   const { actions } = useAnimations(animations, group);
 
-  // Optimizar mallas y sombras del modelo
   const clonedScene = useMemo(() => {
     const clone = scene.clone(true);
     clone.traverse((child) => {
-      if ((child as THREE.Mesh).isMesh) {
-        const mesh = child as THREE.Mesh;
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        if (mesh.material) {
-          const mat = mesh.material as THREE.MeshStandardMaterial;
-          mat.envMapIntensity = 1.0;
-          mat.roughness = Math.max(0.2, mat.roughness ?? 0.5);
-        }
-      }
+      if (!(child as THREE.Mesh).isMesh) return;
+      const mesh = child as THREE.Mesh;
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      const materials = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+      materials.forEach((material) => {
+        if (!material || !(material as THREE.MeshStandardMaterial).isMeshStandardMaterial) return;
+        const mat = material as THREE.MeshStandardMaterial;
+        mat.envMapIntensity = 1;
+        mat.roughness = Math.max(0.2, mat.roughness ?? 0.5);
+      });
     });
     return clone;
   }, [scene]);
 
-  // Reproducir primera animación disponible (ej. Idle / Typing)
   useEffect(() => {
     const actionNames = Object.keys(actions);
-    if (actionNames.length > 0) {
-      const mainAction = actions[actionNames[0]];
-      mainAction?.fadeIn(0.5).play();
-      return () => {
-        mainAction?.fadeOut(0.5);
-      };
-    }
+    if (actionNames.length === 0) return;
+    const mainAction = actions[actionNames[0]];
+    mainAction?.reset().fadeIn(0.5).play();
+    return () => {
+      mainAction?.fadeOut(0.5);
+    };
   }, [actions]);
 
-  // Seguimiento suave de la cabeza hacia el ratón
   useFrame(() => {
-    if (!clonedScene) return;
     const head =
       clonedScene.getObjectByName("Head") ||
       clonedScene.getObjectByName("mixamorigHead") ||
       clonedScene.getObjectByName("head") ||
       clonedScene.getObjectByName("Neck");
-
-    if (head) {
-      head.rotation.y = THREE.MathUtils.lerp(head.rotation.y, pointer.x * 0.45, 0.08);
-      head.rotation.x = THREE.MathUtils.lerp(head.rotation.x, -pointer.y * 0.25, 0.08);
-    }
+    if (!head) return;
+    head.rotation.y = THREE.MathUtils.lerp(head.rotation.y, pointer.x * 0.35, 0.08);
+    head.rotation.x = THREE.MathUtils.lerp(head.rotation.x, -pointer.y * 0.2, 0.08);
   });
 
   return (
-    <group ref={group} position={[0, -0.65, 0.15]} scale={1.15}>
+    <group ref={group}>
       <primitive object={clonedScene} />
     </group>
   );
 }
 
-/**
- * Escenario tecnológico limpio cuando aún no se ha colocado un modelo 'avatar.glb'.
- * En lugar de un muñeco deforme, muestra un holograma de desarrollo elegante y minimalista.
- */
+/** Fallback ligero mientras termina de descargarse el GLB. */
 function HologramPlaceholder() {
   const portalRef = useRef<THREE.Group>(null);
   const ringsRef = useRef<THREE.Group>(null);
@@ -113,12 +95,12 @@ function HologramPlaceholder() {
     if (portalRef.current) {
       portalRef.current.rotation.y = THREE.MathUtils.lerp(
         portalRef.current.rotation.y,
-        pointer.x * 0.22,
+        pointer.x * 0.18,
         0.06,
       );
       portalRef.current.rotation.x = THREE.MathUtils.lerp(
         portalRef.current.rotation.x,
-        -pointer.y * 0.14,
+        -pointer.y * 0.1,
         0.06,
       );
     }
@@ -129,10 +111,9 @@ function HologramPlaceholder() {
   });
 
   return (
-    <group ref={portalRef} position={[0, 0.28, 0]}>
-      {/* Monolito flotante de cristal estilizado */}
+    <group ref={portalRef} position={[0, 0.25, 0]} scale={0.9}>
       <mesh position={[0, 0, -0.02]} castShadow>
-        <boxGeometry args={[1.28, 1.42, 0.04]} />
+        <boxGeometry args={[1.1, 1.35, 0.04]} />
         <meshPhysicalMaterial
           color="#0d131f"
           roughness={0.15}
@@ -141,10 +122,8 @@ function HologramPlaceholder() {
           thickness={0.5}
         />
       </mesh>
-
-      {/* Núcleo de datos cian */}
       <mesh position={[0, 0, 0.01]}>
-        <planeGeometry args={[1.14, 1.28]} />
+        <planeGeometry args={[0.98, 1.2]} />
         <meshStandardMaterial
           color="#061226"
           emissive="#00f0ff"
@@ -152,15 +131,13 @@ function HologramPlaceholder() {
           roughness={0.3}
         />
       </mesh>
-
-      {/* Anillos orbitales tecnológicos */}
-      <group ref={ringsRef} position={[0, 0, 0]}>
+      <group ref={ringsRef}>
         <mesh rotation={[Math.PI / 2.3, 0, 0]}>
-          <torusGeometry args={[1.45, 0.006, 8, 80]} />
+          <torusGeometry args={[1.3, 0.006, 8, 80]} />
           <meshBasicMaterial color="#00f0ff" transparent opacity={0.5} />
         </mesh>
         <mesh rotation={[Math.PI / 1.7, 0.4, 0]}>
-          <torusGeometry args={[1.72, 0.004, 8, 80]} />
+          <torusGeometry args={[1.55, 0.004, 8, 80]} />
           <meshBasicMaterial color="#38bdf8" transparent opacity={0.3} />
         </mesh>
       </group>
@@ -169,196 +146,70 @@ function HologramPlaceholder() {
 }
 
 /**
- * Puesto de trabajo moderno con modelado proporcionado y materiales PBR.
+ * Escala y posición del personaje. El GLB mide ~1.63 unidades de alto; con esta
+ * transformación ocupa la mayor parte del alto del lienzo sin recortar la cabeza.
  */
-function Workstation({ children }: { children: React.ReactNode }) {
+function CharacterStage() {
   const group = useRef<THREE.Group>(null);
-  const screenRef = useRef<THREE.MeshStandardMaterial>(null);
   const clock = useRef(0);
-
-  // Partículas ambientales sutiles
-  const particleGeo = useMemo(() => {
-    const count = 40;
-    const pos = new Float32Array(count * 3);
-    // Distribución determinista: evita Math.random durante el render.
-    const pseudo = (seed: number) => {
-      const value = Math.sin(seed * 12.9898) * 43758.5453;
-      return value - Math.floor(value);
-    };
-    for (let i = 0; i < count; i += 1) {
-      pos[i * 3] = (pseudo(i + 1) - 0.5) * 4.2;
-      pos[i * 3 + 1] = (pseudo(i + 101) - 0.5) * 2.8 - 0.1;
-      pos[i * 3 + 2] = (pseudo(i + 201) - 0.5) * 3;
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
-    return geo;
-  }, []);
+  const { size, pointer } = useThree();
+  const compact = size.width < COMPACT_CANVAS;
 
   useFrame((_, delta) => {
     if (!group.current) return;
     clock.current += delta;
 
     const s = sceneState;
-    const breathe = Math.sin(clock.current * 1.5) * 0.014 * (0.6 + s.idle * 0.4);
+    const breathe = Math.sin(clock.current * 1.4) * 0.012;
+    const baseScale = (compact ? 1.22 : 1.34) * THREE.MathUtils.lerp(0.96, 1, s.aboutIn);
 
-    group.current.position.x = s.positionX;
-    group.current.position.y = s.positionY + breathe;
-    group.current.rotation.y = s.rotationY;
-    group.current.rotation.x = s.rotationX;
-    group.current.scale.setScalar(s.scale);
-
-    if (screenRef.current) {
-      screenRef.current.emissiveIntensity =
-        0.5 + Math.sin(clock.current * 3) * 0.08 + s.wake * 0.4;
-    }
+    group.current.scale.setScalar(baseScale * s.scale);
+    group.current.position.set(
+      s.positionX + pointer.x * 0.025 * (1 - s.contactIn),
+      (compact ? -0.92 : -0.98) + s.positionY + breathe,
+      0,
+    );
+    group.current.rotation.y = s.rotationY + pointer.x * 0.035 * (1 - s.contactIn);
+    group.current.rotation.x = s.rotationX - pointer.y * 0.018 * (1 - s.contactIn);
   });
 
   return (
-    <group ref={group}>
-      {/* Avatar o Contenido central */}
-      {children}
-
-      {/* ESCRITORIO CON BISEL ELEGANTE */}
-      <mesh position={[0, -0.72, 0.42]} castShadow receiveShadow>
-        <boxGeometry args={[2.7, 0.08, 1.3]} />
-        <meshStandardMaterial
-          color={MAT_DESK}
-          roughness={0.35}
-          metalness={0.25}
-        />
-      </mesh>
-      {/* Patas metálicas tubulares */}
-      {[-1.16, 1.16].map((x) => (
-        <mesh key={x} position={[x, -1.28, 0.42]} castShadow>
-          <cylinderGeometry args={[0.038, 0.038, 1.05, 16]} />
-          <meshStandardMaterial color={MAT_METAL} roughness={0.4} metalness={0.8} />
-        </mesh>
-      ))}
-
-      {/* SILLA ERGONÓMICA DE ESTUDIO */}
-      <group position={[0, -0.68, -0.65]}>
-        {/* Asiento con acolchado */}
-        <mesh position={[0, -0.42, 0.1]} castShadow receiveShadow>
-          <boxGeometry args={[0.96, 0.1, 0.82]} />
-          <meshStandardMaterial color={MAT_CHAIR} roughness={0.7} />
-        </mesh>
-        {/* Respaldo curvado */}
-        <mesh position={[0, 0.12, -0.28]} rotation={[-0.1, 0, 0]} castShadow>
-          <boxGeometry args={[0.92, 0.95, 0.08]} />
-          <meshStandardMaterial color={MAT_CHAIR} roughness={0.7} />
-        </mesh>
-        {/* Base metálica central */}
-        <mesh position={[0, -0.75, 0.1]} castShadow>
-          <cylinderGeometry args={[0.045, 0.045, 0.58, 16]} />
-          <meshStandardMaterial color={MAT_METAL} roughness={0.35} metalness={0.85} />
-        </mesh>
+    <>
+      <group ref={group}>
+        <Suspense fallback={<HologramPlaceholder />}>
+          <GLTFCharacter modelUrl={MODEL_URL} />
+        </Suspense>
       </group>
-
-      {/* PORTÁTIL PRO (16:10) */}
-      <group position={[0, -0.66, 0.44]}>
-        {/* Chasis de aluminio anodizado */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} castShadow receiveShadow>
-          <boxGeometry args={[1.2, 0.74, 0.034]} />
-          <meshStandardMaterial
-            color={MAT_LAPTOP}
-            metalness={0.85}
-            roughness={0.22}
-          />
-        </mesh>
-        {/* Tapa abierta en ángulo ergonómico */}
-        <mesh position={[0, 0.35, -0.34]} rotation={[-0.22, 0, 0]} castShadow>
-          <boxGeometry args={[1.2, 0.76, 0.034]} />
-          <meshStandardMaterial
-            color={MAT_LAPTOP}
-            metalness={0.85}
-            roughness={0.22}
-          />
-        </mesh>
-        {/* Pantalla emisiva (Luz cian hacia arriba) */}
-        <mesh position={[0, 0.35, -0.315]} rotation={[-0.22, 0, 0]}>
-          <planeGeometry args={[1.06, 0.62]} />
-          <meshStandardMaterial
-            ref={screenRef}
-            color="#001833"
-            emissive={MAT_SCREEN_GLOW}
-            emissiveIntensity={0.55}
-            roughness={0.2}
-          />
-        </mesh>
-        {/* Luz puntual de la pantalla */}
-        <pointLight
-          position={[0, 0.42, 0.08]}
-          intensity={0.75}
-          color={MAT_SCREEN_GLOW}
-          distance={2.4}
-          decay={2}
-        />
-        {/* Teclado slim */}
-        <mesh position={[0, 0.02, 0.06]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[0.96, 0.38]} />
-          <meshStandardMaterial color="#121418" roughness={0.85} />
-        </mesh>
-      </group>
-
-      {/* TAZA DE CERÁMICA */}
-      <group position={[0.92, -0.62, 0.48]}>
-        <mesh castShadow receiveShadow>
-          <cylinderGeometry args={[0.068, 0.058, 0.13, 20]} />
-          <meshStandardMaterial color={MAT_MUG} roughness={0.18} />
-        </mesh>
-        <mesh position={[0.072, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-          <torusGeometry args={[0.038, 0.011, 8, 16]} />
-          <meshStandardMaterial color={MAT_MUG} roughness={0.18} />
-        </mesh>
-      </group>
-
-      {/* PARTÍCULAS ESPACIALES AMBIENTALES */}
-      <points geometry={particleGeo}>
-        <pointsMaterial
-          size={0.032}
-          color={MAT_SCREEN_GLOW}
-          transparent
-          opacity={0.6}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
-
-      {/* SOMBRAS DE CONTACTO SUAVES (GROUND CONTACT) */}
       <ContactShadows
-        position={[0, -1.25, 0.3]}
-        opacity={0.7}
-        scale={10}
-        blur={2.4}
-        far={3.8}
-        resolution={1024}
-        color="#050810"
+        position={[0, -0.98, 0]}
+        opacity={0.38}
+        scale={4}
+        blur={2.6}
+        far={2.6}
+        resolution={512}
+        color="#031033"
       />
-    </group>
+    </>
   );
 }
 
-/** Rig de Cámara y Luces de Estudio Three.js */
-function SceneSetup({ hasCustomModel }: { hasCustomModel: boolean }) {
-  const { pointer } = useThree();
+/** Cámara y luces de estudio ajustadas al tamaño real del lienzo. */
+function SceneSetup() {
+  const { pointer, size } = useThree();
   const camera = useRef<THREE.PerspectiveCamera>(null);
+  const compact = size.width < COMPACT_CANVAS;
+  const focusY = compact ? 0.1 : 0.16;
 
   useFrame(() => {
-    const s = sceneState;
-    const t = THREE.MathUtils.clamp(
-      Math.max(s.aboutIn - s.aboutOut * 0.25, s.contactIn),
-      0,
-      1,
-    );
-    BACKGROUND.copy(BEIGE).lerp(BLUE, t);
+    BACKGROUND.copy(BEIGE).lerp(BLUE, THREE.MathUtils.clamp(Math.max(sceneState.aboutIn - sceneState.aboutOut * 0.25, sceneState.contactIn), 0, 1));
 
     const current = camera.current;
     if (!current) return;
-    const parallaxX = pointer.x * 0.16 * (1 - s.contactIn * 0.5);
-    const parallaxY = pointer.y * 0.1;
+    const parallaxX = pointer.x * 0.09 * (1 - sceneState.contactIn * 0.5);
+    const parallaxY = pointer.y * 0.05;
     current.position.x += (parallaxX - current.position.x) * 0.05;
-    current.position.y += (parallaxY - current.position.y) * 0.05;
-    current.lookAt(0, -0.15 + s.contactIn * 0.35, 0);
+    current.position.y += (focusY + parallaxY - current.position.y) * 0.05;
+    current.lookAt(0, focusY, 0);
   });
 
   return (
@@ -367,77 +218,57 @@ function SceneSetup({ hasCustomModel }: { hasCustomModel: boolean }) {
       <PerspectiveCamera
         ref={camera}
         makeDefault
-        position={[0, 0.15, 5.2]}
-        fov={40}
+        position={[0, focusY, compact ? 4.1 : 3.7]}
+        fov={compact ? 38 : 36}
         near={0.1}
         far={100}
       />
 
-      {/* ILUMINACIÓN DE ESTUDIO EN 3 PUNTOS */}
-      {/* Luz ambiental suave */}
-      <ambientLight intensity={0.75} />
-      {/* Key Light (Luz principal con sombras suaves) */}
+      {/* Iluminación de estudio: more claridad en rostro y silueta sin cambiar la paleta */}
+      <hemisphereLight args={["#f4fbff", "#052e87", 0.5]} />
+      <ambientLight intensity={0.5} />
       <directionalLight
         position={[3.2, 5.2, 4]}
-        intensity={1.7}
+        intensity={1.9}
         color="#fff5ea"
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0001}
       />
-      {/* Fill Light (Luz de relleno suave) */}
-      <directionalLight position={[-2.8, 2.4, 4.2]} intensity={0.7} color="#eef4ff" />
-      {/* Rim Light (Luz de recorte cian/azul para despegar la silueta) */}
-      <directionalLight position={[-3.5, 3.5, -3]} intensity={1.1} color="#00f0ff" />
-      <directionalLight position={[3.5, 2.5, -3]} intensity={0.6} color="#38bdf8" />
+      <directionalLight position={[-2.8, 2.4, 4.2]} intensity={1.05} color="#eef4ff" />
+      <directionalLight position={[-3.5, 3.5, -3]} intensity={0.8} color="#8beaff" />
+      <directionalLight position={[3.5, 2.5, -3]} intensity={0.4} color="#38bdf8" />
+      <spotLight
+        position={[0, 3.2, 4.4]}
+        angle={0.42}
+        penumbra={0.9}
+        intensity={0.55}
+        color="#fff1e0"
+      />
 
-      {/* Estación de trabajo */}
-      <Workstation>
-        {hasCustomModel ? (
-          <Suspense fallback={<HologramPlaceholder />}>
-            <GLTFCharacter modelUrl="/models/avatar.glb" />
-          </Suspense>
-        ) : (
-          <HologramPlaceholder />
-        )}
-      </Workstation>
+      <CharacterStage />
     </>
   );
 }
 
 export default function AvatarScene() {
-  const host = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const [hasCustomModel, setHasCustomModel] = useState<boolean>(false);
-
-  // Verificar si el usuario ya colocó su modelo 3D en /public/models/avatar.glb
-  useEffect(() => {
-    fetch("/models/avatar.glb", { method: "HEAD" })
-      .then((res) => {
-        if (res.ok) {
-          setHasCustomModel(true);
-        }
-      })
-      .catch(() => {
-        setHasCustomModel(false);
-      });
-  }, []);
 
   return (
-    <div className="scene-canvas" ref={host} aria-hidden>
+    <div className="scene-canvas" aria-hidden>
       <Canvas
         gl={{
           antialias: true,
           alpha: false,
           powerPreference: "high-performance",
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.1,
+          toneMappingExposure: 1.18,
         }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.75]}
         shadows
         frameloop={reduced ? "demand" : "always"}
       >
-        <SceneSetup hasCustomModel={hasCustomModel} />
+        <SceneSetup />
       </Canvas>
     </div>
   );

@@ -28,7 +28,7 @@ export const sceneState: SceneState = {
   scale: 1,
   positionY: 0,
   positionX: 0,
-  rotationY: -0.5,
+  rotationY: -0.32,
   rotationX: 0,
   idle: 0,
   wake: 0,

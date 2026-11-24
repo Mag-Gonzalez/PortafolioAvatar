@@ -6,6 +6,7 @@ import { sceneState } from "@/lib/sceneState";
 import { profile } from "@/data/portfolio";
 import Banner from "@/components/ui/Banner";
 import { useI18n } from "@/lib/i18n";
+import AvatarStage from "@/components/three/AvatarStage";
 
 const FOCUS_ITEMS = {
   es: ["Desarrollo web", "Interfaces interactivas", "ReserVa", "ZARFA"],
@@ -26,6 +27,8 @@ export default function IntroAbout() {
 
     if (reduced) {
       sceneState.progress = 1;
+      sceneState.aboutIn = 1;
+      if (backdrop.current) backdrop.current.style.opacity = "1";
       if (aboutContent.current) aboutContent.current.style.opacity = "1";
       if (progressText.current) progressText.current.textContent = "100%";
       if (progressBar.current) progressBar.current.style.transform = "scaleX(1)";
@@ -33,47 +36,21 @@ export default function IntroAbout() {
     }
 
     const ctx = gsap.context(() => {
+      // 1. Hero text se encoge, asciende y desaparece en la primera fase del scroll
       gsap.to(heroInner.current, {
-        yPercent: -18,
-        scale: 0.94,
+        yPercent: -22,
+        scale: 0.92,
         opacity: 0,
         ease: "none",
         scrollTrigger: {
           trigger: root.current,
-          start: "6% top",
-          end: "30% top",
+          start: "4% top",
+          end: "28% top",
           scrub: 1,
         },
       });
 
-      gsap.fromTo(
-        aboutContent.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: root.current,
-            start: "22% top",
-            end: "38% top",
-            scrub: 1,
-          },
-        },
-      );
-
-      gsap.to(aboutContent.current, {
-        opacity: 0,
-        y: -40,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root.current,
-          start: "88% top",
-          end: "100% top",
-          scrub: 1,
-        },
-      });
-
+      // 2. Fondo cyberspace (deep blue + glow) se revela de 0 a 1
       gsap.fromTo(
         backdrop.current,
         { opacity: 0 },
@@ -82,13 +59,45 @@ export default function IntroAbout() {
           ease: "none",
           scrollTrigger: {
             trigger: root.current,
-            start: "14% top",
-            end: "32% top",
+            start: "6% top",
+            end: "28% top",
             scrub: 1,
           },
         },
       );
 
+      // 3. El avatar 3D es una única instancia gestionada por AvatarStage dentro del canvas
+
+      // 4. Paneles HUD holográficos de About aparecen y se desvanecen
+      gsap.fromTo(
+        aboutContent.current,
+        { opacity: 0, y: 35 },
+        {
+          opacity: 1,
+          y: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root.current,
+            start: "24% top",
+            end: "38% top",
+            scrub: 1,
+          },
+        },
+      );
+
+      gsap.to(aboutContent.current, {
+        opacity: 0,
+        y: -35,
+        ease: "none",
+        scrollTrigger: {
+          trigger: root.current,
+          start: "86% top",
+          end: "100% top",
+          scrub: 1,
+        },
+      });
+
+      // 5. Desvanecimiento del fondo al finalizar la sección hacia Projects
       gsap.to(backdrop.current, {
         opacity: 0,
         ease: "none",
@@ -100,6 +109,7 @@ export default function IntroAbout() {
         },
       });
 
+      // 6. Contador de progreso numérico y barra de scroll
       ScrollTrigger.create({
         trigger: root.current,
         start: "top top",
@@ -129,11 +139,15 @@ export default function IntroAbout() {
 
   return (
     <section className="intro" id="top" ref={root}>
-      {/* Capa única preparada para el futuro canvas continuo. Sin renderer 3D todavía. */}
+      {/* Capa continua fija del Hero y About */}
       <div className="intro__sticky">
-        <div className="scene-canvas-host" id="scene-canvas-host" aria-hidden="true" />
+        {/* Fondo continuo cyberspace con gradiente e iluminación radial */}
+        <div className="scene-canvas-host" ref={backdrop} aria-hidden="true">
+          <AvatarStage />
+        </div>
         <div className="scene-canvas-host__glow" aria-hidden="true" />
 
+        {/* Paneles holográficos informativos; el avatar 3D se renderiza una sola vez en el canvas */}
         <div className="about-content" ref={aboutContent} data-theme="dark">
           <div className="about-panel about-panel--details">
             <div className="about-panel__box">
@@ -175,6 +189,7 @@ export default function IntroAbout() {
         </div>
       </div>
 
+      {/* Capa superior del Hero (Texto principal y banner) */}
       <div className="hero" id="hero">
         <div className="hero__grid grid">
           <div className="hero__inner" ref={heroInner}>

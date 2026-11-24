@@ -138,7 +138,7 @@
 </main>
 
 <footer>
-  <span class="note">Salida: <code>docs/avatar/local/config/proportions.json</code>. Cópiala a esa ruta después de descargarla.</span>
+  <span class="note">Salida: <code>docs/avatar/local/config/proportions.json</code>. Frontal obligatorio; perfil pendiente (opcional, sin vista real). Cópiala a esa ruta después de descargarla.</span>
   <button id="download" class="primary">Descargar proportions.json</button>
   <button id="copy">Copiar JSON</button>
   <button id="validate">Validar puntos</button>
@@ -278,8 +278,14 @@ function render(key) {
   const s = viewState(key);
   const total = pointList(key).length;
   const done = Object.keys(s.points).length;
+  const status = key === "front"
+    ? (missingFor(key).length === 0 ? "MEDIDA" : "PENDIENTE")
+    : "PENDIENTE (no exportado)";
+  const label = key === "front" ? "FRENTE" : "PERFIL (opcional, sin perfil real)";
   document.getElementById("status-" + key).innerHTML =
-    (s.imageName ? s.imageName + "<br>" : "") + "<b>" + done + " / " + total + "</b> puntos";
+    (s.imageName ? s.imageName + "<br>" : "") +
+    "<b>" + label + ": " + status + "</b><br>" +
+    done + " / " + total + " puntos";
 }
 
 function renderList(key) {
@@ -330,7 +336,6 @@ function p(key, id) { return state[key].points[id] || null; }
 
 function buildRatios() {
   const r = {};
-  const f = state.front;
   const a = p("front", "ojo_izq_interno");
   const b = p("front", "ojo_der_interno");
   const jawL = p("front", "mandibula_izq");
@@ -348,18 +353,19 @@ function buildRatios() {
     r.ratio_alto_sobre_ancho = rounded(r.alto_rostro_px / r.ancho_mandibula_px);
   if (r.nariz_a_menton_px && r.alto_rostro_px)
     r.ratio_tercio_inferior = rounded(r.nariz_a_menton_px / r.alto_rostro_px);
-
-  const pr = state.profile;
-  const root = p("profile", "nariz_raiz");
-  const tip = p("profile", "nariz_punta_perfil");
-  const ear = p("profile", "oreja_centro");
-  const neck = p("profile", "nuca");
-  if (root && tip) r.proyeccion_nasal_px = rounded(Math.abs(tip[0] - root[0]));
-  if (ear && neck) r.oreja_a_nuca_px = rounded(dist(ear, neck));
   return r;
 }
 
 function payload() {
+  const front = state.front;
+  const profilePending = {
+    status: "pendiente",
+    reason: "No existe vista de perfil verdadera; no se exportan coordenadas ni métricas de perfil.",
+    image_name: null,
+    image_size: null,
+    points: {},
+    ratios: {}
+  };
   return {
     schema_version: 1,
     generated_by: "docs/avatar/local/tools/landmark_picker.html",
@@ -367,35 +373,40 @@ function payload() {
     privacy: { uploaded_to_external_services: false, network_requests: 0 },
     coordinate_space: "pixeles de la imagen original, origen arriba-izquierda",
     eyebrow_cut: "derecha_anatomica",
+    measurement_status: {
+      front: missingFor("front").length === 0 ? "medida" : "pendiente",
+      profile: "pendiente",
+      note: "Solo se exportan landmarks frontales. El perfil queda pendiente sin coordenadas ni proporciones inventadas."
+    },
     views: {
       front: {
-        image_name: state.front.imageName,
-        image_size: state.front.imageSize,
-        points: state.front.points
+        image_name: front.imageName,
+        image_size: front.imageSize,
+        points: front.points
       },
-      profile: {
-        image_name: state.profile.imageName,
-        image_size: state.profile.imageSize,
-        points: state.profile.points
-      }
+      profile: profilePending
     },
     ratios: buildRatios()
   };
 }
 
-function validate() {
+function missingFor(key) {
   const missing = [];
-  Object.keys(VIEWS).forEach(key => {
-    if (!state[key].imageSize) missing.push(key + ": sin imagen");
-    pointList(key).forEach(([id, label]) => {
-      if (!(id in state[key].points)) missing.push(key + ": " + label);
-    });
+  const s = viewState(key);
+  if (!s.imageSize) missing.push(key + ": sin imagen");
+  pointList(key).forEach(([id, label]) => {
+    if (!(id in s.points)) missing.push(key + ": " + label);
   });
+  return missing;
+}
+
+function validate() {
+  const missing = missingFor("front");
   if (missing.length) {
-    msg("Faltan " + missing.length + " elementos. Primeros: " + missing.slice(0, 3).join(" | "));
+    msg("Faltan " + missing.length + " elementos en FRENTE. Primeros: " + missing.slice(0, 3).join(" | "));
     return false;
   }
-  msg("Validación OK: todos los puntos marcados");
+  msg("Validación OK: frente completo; perfil pendiente (opcional)");
   return true;
 }
 

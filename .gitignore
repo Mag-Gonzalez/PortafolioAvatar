@@ -55,8 +55,11 @@ Thumbs.db
 # Avatar — privacidad (no subir fotos ni derivados)
 docs/avatar/prepared/
 docs/avatar/originals/
+docs/avatar/source/
+docs/avatar/local/references/
 docs/avatar/*.jpg
 docs/avatar/*.jpeg
 docs/avatar/local/checkpoints/
 docs/avatar/local/exports/
 docs/avatar/local/config/proportions.json
+public/assets/avatar/
